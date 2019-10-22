@@ -1,7 +1,3 @@
-# 2019-10-11
-
-- Suggest succinct context for error messages.
-
-# 2019-10-10
+# 2019-10-22
 
 - Initial release.
