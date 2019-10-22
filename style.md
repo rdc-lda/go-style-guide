@@ -48,7 +48,7 @@ row before the </tbody></table> line.
 
 -->
 
-# Uber Go Style Guide
+# RDC Go Style Guide
 
 ## Table of Contents
 
