@@ -19,15 +19,15 @@ For side-by-side code samples, use the following snippet.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 BAD CODE GOES HERE
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 GOOD CODE GOES HERE
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -108,7 +108,7 @@ Dos and Don'ts of writing Go code at RDC, Lda. These rules exist to keep the cod
 base manageable while still allowing engineers to use Go language features
 productively.
 
-This guide was originally forker from the Uber Go Style Guide.
+This guide was originally forked from the Uber Go Style Guide.
 
 This documents idiomatic conventions in Go code that we follow at RDC, Lda. A lot
 of these are general guidelines for Go, while others extend upon external
@@ -149,7 +149,7 @@ Methods with value receivers can be called on pointers as well as values.
 
 For example,
 
-```go
+~~~go
 type S struct {
   data string
 }
@@ -175,12 +175,12 @@ sPtrs := map[int]*S{1: {"A"}}
 // You can call both Read and Write using a pointer
 sPtrs[1].Read()
 sPtrs[1].Write("test")
-```
+~~~
 
 Similarly, an interface can be satisfied by a pointer, even if the method has a
 value receiver.
 
-```go
+~~~go
 type F interface {
   f()
 }
@@ -205,7 +205,7 @@ i = s2Ptr
 
 // The following doesn't compile, since s2Val is a value, and there is no value receiver for f.
 //   i = s2Val
-```
+~~~
 
 Effective Go has a good write up on [Pointers vs. Values].
 
@@ -221,17 +221,17 @@ never need a pointer to a mutex.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 mu := new(sync.Mutex)
 mu.Lock()
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 var mu sync.Mutex
 mu.Lock()
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -245,7 +245,7 @@ the mutex.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type smap struct {
   sync.Mutex // only for unexported types
 
@@ -264,11 +264,11 @@ func (m *smap) Get(k string) string {
 
   return m.data[k]
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type SMap struct {
   mu sync.Mutex
 
@@ -287,7 +287,7 @@ func (m *SMap) Get(k string) string {
 
   return m.data[k]
 }
-```
+~~~
 
 </td></tr>
 
@@ -315,7 +315,7 @@ if you store a reference to it.
 <tr>
 <td>
 
-```go
+~~~go
 func (d *Driver) SetTrips(trips []Trip) {
   d.trips = trips
 }
@@ -325,12 +325,12 @@ d1.SetTrips(trips)
 
 // Did you mean to modify d1.trips?
 trips[0] = ...
-```
+~~~
 
 </td>
 <td>
 
-```go
+~~~go
 func (d *Driver) SetTrips(trips []Trip) {
   d.trips = make([]Trip, len(trips))
   copy(d.trips, trips)
@@ -341,7 +341,7 @@ d1.SetTrips(trips)
 
 // We can now modify trips[0] without affecting d1.trips.
 trips[0] = ...
-```
+~~~
 
 </td>
 </tr>
@@ -359,7 +359,7 @@ state.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type Stats struct {
   mu sync.Mutex
   counters map[string]int
@@ -376,11 +376,11 @@ func (s *Stats) Snapshot() map[string]int {
 // snapshot is no longer protected by the mutex, so any
 // access to the snapshot is subject to data races.
 snapshot := stats.Snapshot()
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type Stats struct {
   mu sync.Mutex
   counters map[string]int
@@ -399,7 +399,7 @@ func (s *Stats) Snapshot() map[string]int {
 
 // Snapshot is now a copy.
 snapshot := stats.Snapshot()
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -413,7 +413,7 @@ Use defer to clean up resources such as files and locks.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 p.Lock()
 if p.count < 10 {
   p.Unlock()
@@ -427,11 +427,11 @@ p.Unlock()
 return newCount
 
 // easy to miss unlocks due to multiple returns
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 p.Lock()
 defer p.Unlock()
 
@@ -443,7 +443,7 @@ p.count++
 return p.count
 
 // more readable
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -467,19 +467,19 @@ writers, and what happens when this occurs.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // Ought to be enough for anybody!
 c := make(chan int, 64)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // Size of one
 c := make(chan int, 1) // or
 // Unbuffered channel, size of zero
 c := make(chan int)
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -495,7 +495,7 @@ should usually start your enums on a non-zero value.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type Operation int
 
 const (
@@ -505,11 +505,11 @@ const (
 )
 
 // Add=0, Subtract=1, Multiply=2
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type Operation int
 
 const (
@@ -519,7 +519,7 @@ const (
 )
 
 // Add=1, Subtract=2, Multiply=3
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -527,7 +527,7 @@ const (
 There are cases where using the zero value makes sense, for example when the
 zero value case is the desirable default behavior.
 
-```go
+~~~go
 type LogOutput int
 
 const (
@@ -537,7 +537,7 @@ const (
 )
 
 // LogToStdout=0, LogToFile=1, LogToRemote=2
-```
+~~~
 
 <!-- TODO: section on String methods for enums -->
 
@@ -572,7 +572,7 @@ using [`errors.New`], use a var for the error.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // package foo
 
 func Open() error {
@@ -590,11 +590,11 @@ func use() {
     }
   }
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // package foo
 
 var ErrCouldNotOpen = errors.New("could not open")
@@ -612,7 +612,7 @@ if err := foo.Open(); err != nil {
     panic("unknown error")
   }
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -626,7 +626,7 @@ custom type.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 func open(file string) error {
   return fmt.Errorf("file %q not found", file)
 }
@@ -640,11 +640,11 @@ func use() {
     }
   }
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type errNotFound struct {
   file string
 }
@@ -666,7 +666,7 @@ func use() {
     }
   }
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -675,7 +675,7 @@ Be careful with exporting custom error types directly since they become part of
 the public API of the package. It is preferable to expose matcher functions to
 check the error instead.
 
-```go
+~~~go
 // package foo
 
 type errNotFound struct {
@@ -704,7 +704,7 @@ if err := foo.Open("foo"); err != nil {
     panic("unknown error")
   }
 }
-```
+~~~
 
 <!-- TODO: Exposing the information to callers with accessor functions. -->
 
@@ -733,35 +733,35 @@ percolates up through the stack:
 <tbody>
 <tr><td>
 
-```go
+~~~go
 s, err := store.New()
 if err != nil {
     return fmt.Errorf(
         "failed to create new store: %s", err)
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 s, err := store.New()
 if err != nil {
     return fmt.Errorf(
         "new store: %s", err)
 }
-```
+~~~
 
 <tr><td>
 
-```
+~~~
 failed to x: failed to y: failed to create new store: the error
-```
+~~~
 
 </td><td>
 
-```
+~~~
 x: y: new store: the error
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -786,18 +786,18 @@ type. Therefore, always use the "comma ok" idiom.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 t := i.(string)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 t, ok := i.(string)
 if !ok {
   // handle the error gracefully
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -818,7 +818,7 @@ allow the caller to decide how to handle it.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 func foo(bar string) {
   if len(bar) == 0 {
     panic("bar must not be empty")
@@ -833,11 +833,11 @@ func main() {
   }
   foo(os.Args[1])
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 func foo(bar string) error {
   if len(bar) == 0 {
     return errors.New("bar must not be empty")
@@ -855,7 +855,7 @@ func main() {
     panic(err)
   }
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -865,9 +865,9 @@ something irrecoverable happens such as a nil dereference. An exception to this 
 program initialization: bad things at program startup that should abort the
 program may cause panic.
 
-```go
+~~~go
 var _statusTemplate = template.Must(template.New("name").Parse("_statusHTML"))
-```
+~~~
 
 Even in tests, prefer `t.Fatal` or `t.FailNow` over panics to ensure that the
 test is marked as failed.
@@ -877,25 +877,25 @@ test is marked as failed.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // func TestFoo(t *testing.T)
 
 f, err := ioutil.TempFile("", "test")
 if err != nil {
   panic("failed to set up test")
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // func TestFoo(t *testing.T)
 
 f, err := ioutil.TempFile("", "test")
 if err != nil {
   t.Fatal("failed to set up test")
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -919,7 +919,7 @@ underlying type. Additionally, it includes a convenient `atomic.Bool` type.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type foo struct {
   running int32  // atomic
 }
@@ -935,11 +935,11 @@ func (f* foo) start() {
 func (f *foo) isRunning() bool {
   return f.running == 1  // race!
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type foo struct {
   running atomic.Bool
 }
@@ -955,7 +955,7 @@ func (f *foo) start() {
 func (f *foo) isRunning() bool {
   return f.running.Load()
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -974,32 +974,32 @@ When converting primitives to/from strings, `strconv` is faster than
 <tbody>
 <tr><td>
 
-```go
+~~~go
 for i := 0; i < b.N; i++ {
   s := fmt.Sprint(rand.Int())
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 for i := 0; i < b.N; i++ {
   s := strconv.Itoa(rand.Int())
 }
-```
+~~~
 
 </td></tr>
 <tr><td>
 
-```
+~~~
 BenchmarkFmtSprint-4    143 ns/op    2 allocs/op
-```
+~~~
 
 </td><td>
 
-```
+~~~
 BenchmarkStrconv-4    64.2 ns/op    1 allocs/op
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1014,33 +1014,33 @@ conversion once and capture the result.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 for i := 0; i < b.N; i++ {
   w.Write([]byte("Hello world"))
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 data := []byte("Hello world")
 for i := 0; i < b.N; i++ {
   w.Write(data)
 }
-```
+~~~
 
 </tr>
 <tr><td>
 
-```
+~~~
 BenchmarkBad-4   50000000   22.2 ns/op
-```
+~~~
 
 </td><td>
 
-```
+~~~
 BenchmarkGood-4  500000000   3.25 ns/op
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1050,9 +1050,9 @@ BenchmarkGood-4  500000000   3.25 ns/op
 Where possible, provide capacity hints when initializing
 maps with `make()`.
 
-```go
+~~~go
 make(map[T1]T2, hint)
-```
+~~~
 
 Providing a capacity hint to `make()` tries to right-size the
 map at initialization time, which reduces the need for growing
@@ -1065,18 +1065,18 @@ elements may still allocate even if a capacity hint is provided.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 m := make(map[string]os.FileInfo)
 
 files, _ := ioutil.ReadDir("./files")
 for _, f := range files {
     m[f.Name()] = f
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 
 files, _ := ioutil.ReadDir("./files")
 
@@ -1084,7 +1084,7 @@ m := make(map[string]os.FileInfo, len(files))
 for _, f := range files {
     m[f.Name()] = f
 }
-```
+~~~
 
 </td></tr>
 <tr><td>
@@ -1131,19 +1131,19 @@ Go supports grouping similar declarations.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 import "a"
 import "b"
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 import (
   "a"
   "b"
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1155,7 +1155,7 @@ This also applies to constants, variables, and type declarations.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 
 const a = 1
 const b = 2
@@ -1169,11 +1169,11 @@ var b = 2
 
 type Area float64
 type Volume float64
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 const (
   a = 1
   b = 2
@@ -1188,7 +1188,7 @@ type (
   Area float64
   Volume float64
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1200,7 +1200,7 @@ Only group related declarations. Do not group declarations that are unrelated.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type Operation int
 
 const (
@@ -1209,11 +1209,11 @@ const (
   Multiply
   ENV_VAR = "MY_ENV"
 )
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type Operation int
 
 const (
@@ -1223,7 +1223,7 @@ const (
 )
 
 const ENV_VAR = "MY_ENV"
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1236,7 +1236,7 @@ inside of functions.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 func f() string {
   var red = color.New(0xff0000)
   var green = color.New(0x00ff00)
@@ -1244,11 +1244,11 @@ func f() string {
 
   ...
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 func f() string {
   var (
     red   = color.New(0xff0000)
@@ -1258,7 +1258,7 @@ func f() string {
 
   ...
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1277,18 +1277,18 @@ This is the grouping applied by goimports by default.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 import (
   "fmt"
   "os"
   "go.uber.org/atomic"
   "golang.org/x/sync/errgroup"
 )
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 import (
   "fmt"
   "os"
@@ -1296,7 +1296,7 @@ import (
   "go.uber.org/atomic"
   "golang.org/x/sync/errgroup"
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1331,14 +1331,14 @@ for the purpose of grouping related test cases, e.g.,
 Import aliasing must be used if the package name does not match the last
 element of the import path.
 
-```go
+~~~go
 import (
   "net/http"
 
   client "example.com/client-go"
   trace "example.com/trace/v2"
 )
-```
+~~~
 
 In all other scenarios, import aliases should be avoided unless there is a
 direct conflict between imports.
@@ -1348,7 +1348,7 @@ direct conflict between imports.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 import (
   "fmt"
   "os"
@@ -1356,11 +1356,11 @@ import (
 
   nettrace "golang.net/x/trace"
 )
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 import (
   "fmt"
   "os"
@@ -1368,7 +1368,7 @@ import (
 
   nettrace "golang.net/x/trace"
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1392,7 +1392,7 @@ towards the end of the file.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 func (s *something) Cost() {
   return calcCost(s.weights)
 }
@@ -1406,11 +1406,11 @@ func (s *something) Stop() {...}
 func newSomething() *something {
     return &something{}
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type something struct{ ... }
 
 func newSomething() *something {
@@ -1424,7 +1424,7 @@ func (s *something) Cost() {
 func (s *something) Stop() {...}
 
 func calcCost(n []int) int {...}
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1440,7 +1440,7 @@ of code that is nested multiple levels.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 for _, v := range data {
   if v.F1 == 1 {
     v = process(v)
@@ -1453,11 +1453,11 @@ for _, v := range data {
     log.Printf("Invalid v: %v", v)
   }
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 for _, v := range data {
   if v.F1 != 1 {
     log.Printf("Invalid v: %v", v)
@@ -1470,7 +1470,7 @@ for _, v := range data {
   }
   v.Send()
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1485,23 +1485,23 @@ single if.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 var a int
 if b {
   a = 100
 } else {
   a = 10
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 a := 10
 if b {
   a = 100
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1516,21 +1516,21 @@ unless it is not the same type as the expression.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 var _s string = F()
 
 func F() string { return "A" }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 var _s = F()
 // Since F already states that it returns a string, we don't need to specify
 // the type again.
 
 func F() string { return "A" }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1538,7 +1538,7 @@ func F() string { return "A" }
 Specify the type if the type of the expression does not match the desired type
 exactly.
 
-```go
+~~~go
 type myError struct{}
 
 func (myError) Error() string { return "error" }
@@ -1547,7 +1547,7 @@ func F() myError { return myError{} }
 
 var _e error = F()
 // F returns an object of type myError but we want error.
-```
+~~~
 
 ### Prefix Unexported Globals with _
 
@@ -1565,7 +1565,7 @@ file.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // foo.go
 
 const (
@@ -1583,18 +1583,18 @@ func Bar() {
   // We will not see a compile error if the first line of
   // Bar() is deleted.
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // foo.go
 
 const (
   _defaultPort = 8080
   _defaultUser = "user"
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1610,22 +1610,22 @@ fields.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 type Client struct {
   version int
   http.Client
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type Client struct {
   http.Client
 
   version int
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1642,19 +1642,19 @@ now enforced by [`go vet`].
 <tbody>
 <tr><td>
 
-```go
+~~~go
 k := User{"John", "Doe", true}
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 k := User{
     FirstName: "John",
     LastName: "Doe",
     Admin: true,
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1662,7 +1662,7 @@ k := User{
 Exception: Field names *may* be omitted in test tables when there are 3 or
 fewer fields.
 
-```go
+~~~go
 tests := []struct{
   op Operation
   want string
@@ -1670,7 +1670,7 @@ tests := []struct{
   {Add, "add"},
   {Subtract, "subtract"},
 }
-```
+~~~
 
 ### Local Variable Declarations
 
@@ -1682,15 +1682,15 @@ some value explicitly.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 var s = "foo"
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 s := "foo"
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1705,7 +1705,7 @@ keyword is use. [Declaring Empty Slices], for example.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 func f(list []int) {
   filtered := []int{}
   for _, v := range list {
@@ -1714,11 +1714,11 @@ func f(list []int) {
     }
   }
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 func f(list []int) {
   var filtered []int
   for _, v := range list {
@@ -1727,7 +1727,7 @@ func f(list []int) {
     }
   }
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1744,19 +1744,19 @@ func f(list []int) {
   <tbody>
   <tr><td>
 
-  ```go
+  ~~~go
   if x == "" {
     return []int{}
   }
-  ```
+  ~~~
 
   </td><td>
 
-  ```go
+  ~~~go
   if x == "" {
     return nil
   }
-  ```
+  ~~~
 
   </td></tr>
   </tbody></table>
@@ -1769,19 +1769,19 @@ func f(list []int) {
   <tbody>
   <tr><td>
 
-  ```go
+  ~~~go
   func isEmpty(s []string) bool {
     return s == nil
   }
-  ```
+  ~~~
 
   </td><td>
 
-  ```go
+  ~~~go
   func isEmpty(s []string) bool {
     return len(s) == 0
   }
-  ```
+  ~~~
 
   </td></tr>
   </tbody></table>
@@ -1794,7 +1794,7 @@ func f(list []int) {
   <tbody>
   <tr><td>
 
-  ```go
+  ~~~go
   nums := []int{}
   // or, nums := make([]int)
 
@@ -1805,11 +1805,11 @@ func f(list []int) {
   if add2 {
     nums = append(nums, 2)
   }
-  ```
+  ~~~
 
   </td><td>
 
-  ```go
+  ~~~go
   var nums []int
 
   if add1 {
@@ -1819,7 +1819,7 @@ func f(list []int) {
   if add2 {
     nums = append(nums, 2)
   }
-  ```
+  ~~~
 
   </td></tr>
   </tbody></table>
@@ -1834,20 +1834,20 @@ conflicts with [Reduce Nesting](#reduce-nesting).
 <tbody>
 <tr><td>
 
-```go
+~~~go
 err := ioutil.WriteFile(name, data, 0644)
 if err != nil {
  return err
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 if err := ioutil.WriteFile(name, data, 0644); err != nil {
  return err
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1860,7 +1860,7 @@ try to reduce the scope.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 if data, err := ioutil.ReadFile(name); err == nil {
   err = cfg.Decode(data)
   if err != nil {
@@ -1872,11 +1872,11 @@ if data, err := ioutil.ReadFile(name); err == nil {
 } else {
   return err
 }
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 data, err := ioutil.ReadFile(name)
 if err != nil {
    return err
@@ -1888,7 +1888,7 @@ if err := cfg.Decode(data); err != nil {
 
 fmt.Println(cfg)
 return nil
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1903,19 +1903,19 @@ Naked parameters in function calls can hurt readability. Add C-style comments
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // func printInfo(name string, isLocal, done bool)
 
 printInfo("foo", true, true)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // func printInfo(name string, isLocal, done bool)
 
 printInfo("foo", true /* isLocal */, true /* done */)
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1924,7 +1924,7 @@ Better yet, replace naked `bool` types with custom types for more readable and
 type-safe code. This allows more than just two states (true/false) for that
 parameter in the future.
 
-```go
+~~~go
 type Region int
 
 const (
@@ -1941,7 +1941,7 @@ const (
 )
 
 func printInfo(name string, region Region, status Status)
-```
+~~~
 
 ### Use Raw String Literals to Avoid Escaping
 
@@ -1954,15 +1954,15 @@ hand-escaped strings which are much harder to read.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 wantError := "unknown name:\"test\""
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 wantError := `unknown error:"test"`
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -1977,21 +1977,21 @@ is consistent with the struct initialization.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 sval := T{Name: "foo"}
 
 // inconsistent
 sptr := new(T)
 sptr.Name = "bar"
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 sval := T{Name: "foo"}
 
 sptr := &T{Name: "bar"}
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -2008,25 +2008,25 @@ hints later if available.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 var (
   // m1 is safe to read and write;
   // m2 will panic on writes.
   m1 = map[T1]T2{}
   m2 map[T1]T2
 )
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 var (
   // m1 is safe to read and write;
   // m2 will panic on writes.
   m1 = make(map[T1]T2)
   m2 map[T1]T2
 )
-```
+~~~
 
 </td></tr>
 <tr><td>
@@ -2053,22 +2053,22 @@ use map literals to initialize the map.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 m := make(map[T1]T2, 3)
 m[k1] = v1
 m[k2] = v2
 m[k3] = v3
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 m := map[T1]T2{
   k1: v1,
   k2: v2,
   k3: v3,
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -2090,17 +2090,17 @@ This helps `go vet` perform static analysis of the format string.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 msg := "unexpected values %v, %v\n"
 fmt.Printf(msg, 1, 2)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 const msg = "unexpected values %v, %v\n"
 fmt.Printf(msg, 1, 2)
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -2120,9 +2120,9 @@ If using the pre-defined names is not an option, end the name you choose with
 f: `Wrapf`, not `Wrap`. `go vet` can be asked to check specific `Printf`-style
 names but they must end with f.
 
-```shell
+~~~shell
 $ go vet -printfuncs=wrapf,statusf
-```
+~~~
 
 See also [go vet: Printf family check].
 
@@ -2142,7 +2142,7 @@ test logic is repetitive.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // func TestSplitHostPort(t *testing.T)
 
 host, port, err := net.SplitHostPort("192.0.2.0:8000")
@@ -2164,11 +2164,11 @@ host, port, err = net.SplitHostPort("1:8")
 require.NoError(t, err)
 assert.Equal(t, "1", host)
 assert.Equal(t, "8", port)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 // func TestSplitHostPort(t *testing.T)
 
 tests := []struct{
@@ -2206,7 +2206,7 @@ for _, tt := range tests {
     assert.Equal(t, tt.wantPort, port)
   })
 }
-```
+~~~
 
 </td></tr>
 </tbody></table>
@@ -2218,7 +2218,7 @@ We follow the convention that the slice of structs is referred to as `tests`
 and each test case `tt`. Further, we encourage explicating the input and output
 values for each test case with `give` and `want` prefixes.
 
-```go
+~~~go
 tests := []struct{
   give     string
   wantHost string
@@ -2230,7 +2230,7 @@ tests := []struct{
 for _, tt := range tests {
   // ...
 }
-```
+~~~
 
 ### Functional Options
 
@@ -2248,7 +2248,7 @@ more arguments on those functions.
 <tbody>
 <tr><td>
 
-```go
+~~~go
 // package db
 
 func Connect(
@@ -2266,11 +2266,11 @@ db.Connect(addr, db.DefaultTimeout, db.DefaultCaching)
 db.Connect(addr, newTimeout, db.DefaultCaching)
 db.Connect(addr, db.DefaultTimeout, false /* caching */)
 db.Connect(addr, newTimeout, false /* caching */)
-```
+~~~
 
 </td><td>
 
-```go
+~~~go
 type options struct {
   timeout time.Duration
   caching bool
@@ -2326,7 +2326,7 @@ db.Connect(
   db.WithCaching(false),
   db.WithTimeout(newTimeout),
 )
-```
+~~~
 
 </td></tr>
 </tbody></table>
